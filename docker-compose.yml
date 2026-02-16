@@ -1,0 +1,14 @@
+name: 'articles'
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - PORT=${PORT:-3000}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev

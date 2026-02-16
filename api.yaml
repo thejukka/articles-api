@@ -1,0 +1,458 @@
+openapi: 3.0.0
+info:
+  title: Articles API
+  version: 1.0.0
+  description: REST API for managing articles and sections
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+components:
+  schemas:
+    Article:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        url:
+          type: string
+          example: https://example.com/article
+        title:
+          type: string
+          example: My Article Title
+        words:
+          type: integer
+          example: 500
+        section_id:
+          type: integer
+          nullable: true
+          example: 1
+        content:
+          type: string
+          example: Article content here...
+
+    ArticleList:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        url:
+          type: string
+          example: https://example.com/article
+        title:
+          type: string
+          example: My Article Title
+        words:
+          type: integer
+          example: 500
+        section_id:
+          type: integer
+          nullable: true
+          example: 1 
+
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Technology
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+paths:
+  /ping:
+    get:
+      summary: Health check endpoint
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Server is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: pong
+
+  /articles:
+    get:
+      summary: Get all articles
+      tags:
+        - Articles
+      responses:
+        '200':
+          description: List of all articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleList'
+                  
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Add a new article by URL
+      tags:
+        - Articles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+              properties:
+                url:
+                  type: string
+                  example: https://example.com/article
+      responses:
+        '200':
+          description: Article added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Success
+        '400':
+          description: Invalid request (missing or invalid URL)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /articles/{id}:
+    get:
+      summary: Get article by ID
+      tags:
+        - Articles
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Article ID
+      responses:
+        '200':
+          description: Article found
+          content:
+            application/json:
+              content: string
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete article by ID
+      tags:
+        - Articles
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Article ID
+      responses:
+        '200':
+          description: Article deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article deleted
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /articles/search:
+    post:
+      summary: Search articles by word count range
+      tags:
+        - Articles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - min
+                - max
+              properties:
+                min:
+                  type: integer
+                  example: 100
+                max:
+                  type: integer
+                  example: 1000
+      responses:
+        '200':
+          description: List of articles matching word count criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  id: number
+                  title: string
+                  words: number
+        '400':
+          description: Invalid request (missing or invalid min/max values)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /articles/{id}/section:
+    put:
+      summary: Update article's section
+      tags:
+        - Articles
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Article ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                  description: Section ID
+      responses:
+        '200':
+          description: Section updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Success
+        '400':
+          description: Invalid request (missing section ID)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /sections:
+    get:
+      summary: Get all sections
+      tags:
+        - Sections
+      responses:
+        '200':
+          description: List of all sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Section'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Add a new section
+      tags:
+        - Sections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  example: Technology
+      responses:
+        '200':
+          description: Section created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Success
+        '400':
+          description: Invalid request (missing title)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /sections/{id}:
+    get:
+      summary: Get section by ID
+      tags:
+        - Sections
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Section ID
+      responses:
+        '200':
+          description: Section found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+        '404':
+          description: Section not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete section by ID
+      tags:
+        - Sections
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Section ID
+      responses:
+        '200':
+          description: Section deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /sections/{id}/articles:
+    get:
+      summary: Get articles by section ID
+      tags:
+        - Sections
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Section ID
+      responses:
+        '200':
+          description: List of articles in the section
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
