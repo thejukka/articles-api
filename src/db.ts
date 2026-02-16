@@ -85,7 +85,6 @@ const deleteSection = (sectionId: number) => {
   }
 
   db.prepare('DELETE FROM sections WHERE id = ?').run(sectionId);
-  db.prepare('UPDATE articles SET section_id = NULL WHERE section_id = ?').run(sectionId);
 } 
 
 const deleteArticle = (articleId: number) => 
