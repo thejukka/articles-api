@@ -39,7 +39,7 @@ log_section() {
 
 # Display usage
 if [ -z "$KEY_NAME" ]; then
-  echo "Usage: ./create-ec2.sh [STACK_NAME] [KEY_NAME] [INSTANCE_TYPE] [AWS_REGION] [PROFILE]"
+  echo "Usage: ./ec2-launch.sh [STACK_NAME] [KEY_NAME] [INSTANCE_TYPE] [AWS_REGION] [PROFILE]"
   echo ""
   echo "Arguments:"
   echo "  STACK_NAME     - CloudFormation stack name (default: articles-api-stack)"
@@ -49,7 +49,7 @@ if [ -z "$KEY_NAME" ]; then
   echo "  PROFILE        - AWS CLI profile (default: default)"
   echo ""
   echo "Example:"
-  echo "  ./create-ec2.sh articles-api-stack my-key-pair t3.medium eu-north-1 default"
+  echo "  ./ec2-launch.sh articles-api-stack my-key-pair t3.medium eu-north-1 default"
   echo ""
   exit 1
 fi

@@ -95,7 +95,7 @@ fi
 
 
 
-# 5. Build and run Docker container on EC2
+# Build and run Docker container on EC2
 log_info "Building and starting Docker container on EC2..."
 ssh -i "$KEY_PATH" -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP << 'EOF'
   cd articles-api
@@ -131,7 +131,7 @@ fi
 
 
 
-# 6. Verify deployment
+# Verify deployment
 log_info "Verifying deployment..."
 sleep 3
 HEALTH_CHECK=$(ssh -i "$KEY_PATH" -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP "curl -s http://localhost:$HOST_PORT/ping" 2>/dev/null || echo "")
@@ -146,7 +146,7 @@ fi
 
 
 
-# 7. Display deployment information
+# Display deployment information
 log_info "Deployment Complete!"
 echo -e "${GREEN}API URL:${NC} http://$INSTANCE_IP:$HOST_PORT"
 echo -e "${GREEN}Swagger Docs:${NC} http://$INSTANCE_IP:$HOST_PORT/api-docs"
