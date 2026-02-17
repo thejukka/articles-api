@@ -4,19 +4,18 @@ set -e
 
 if [ -z "$*" ]; 
 then 
-  echo "Usage: ./deploy.sh [REPO_URL] [INSTANCE_IP] [KEY_PATH] [AWS_REGION] [INSTANCE_TYPE]"; 
+  echo "Usage: ./deploy.sh [Instance IP] [SSH Key path] (optionally: [Region, default eu-north-1])"; 
   echo
   exit 1
 fi
 
 
+
 # Configuration
-# Usage: ./deploy.sh [REPO_URL] [INSTANCE_IP] [KEY_PATH] [AWS_REGION] [INSTANCE_TYPE]
-REPO_URL="${1:?Error: Repository URL required as first argument}"
-INSTANCE_IP="${2:?Error: Instance IP required as second argument}"
-KEY_PATH="${3:?Error: SSH key path required as third argument}"
-AWS_REGION="${4:-eu-north-1}"
-INSTANCE_TYPE="${5:-t3.medium}"
+INSTANCE_IP="${1:?Error: Instance IP required as first argument}"
+KEY_PATH="${2:?Error: SSH key path required as second argument}"
+AWS_REGION="${3:-eu-north-1}"
+REPO_URL="git@github.com:thejukka/articles-api.git"
 IMAGE_NAME="articles-api"
 IMAGE_TAG="latest"
 CONTAINER_PORT=3000
@@ -77,7 +76,7 @@ ssh -i "$KEY_PATH" -o StrictHostKeyChecking=no ec2-user@$INSTANCE_IP << EOF
   if [ -d "articles-api" ]; then
     echo "Repository already exists, pulling latest changes..."
     cd articles-api
-    git pull origin main || git pull origin master
+    git pull origin main
   else
     echo "Cloning repository..."
     git clone $REPO_URL articles-api

@@ -12,8 +12,8 @@ NC='\033[0m' # No Color
 
 # Configuration
 TEMPLATE_FILE="ec2-template.yml"
-STACK_NAME="${1:-articles-api-stack}"
-KEY_NAME="${2}"
+KEY_NAME="${1}"
+STACK_NAME="${2:-articles-api-stack}"
 INSTANCE_TYPE="${3:-t3.medium}"
 AWS_REGION="${4:-eu-north-1}"
 PROFILE="${5:-default}"
@@ -39,17 +39,18 @@ log_section() {
 
 # Display usage
 if [ -z "$KEY_NAME" ]; then
-  echo "Usage: ./ec2-launch.sh [STACK_NAME] [KEY_NAME] [INSTANCE_TYPE] [AWS_REGION] [PROFILE]"
+  echo "Usage: ./ec2-launch.sh [KeyName] (optional: [StackName] [InstanceType] [Region] [Profile])"
   echo ""
   echo "Arguments:"
-  echo "  STACK_NAME     - CloudFormation stack name (default: articles-api-stack)"
-  echo "  KEY_NAME       - EC2 KeyPair name (required)"
-  echo "  INSTANCE_TYPE  - EC2 instance type (default: t3.medium)"
-  echo "  AWS_REGION     - AWS region (default: eu-north-1)"
-  echo "  PROFILE        - AWS CLI profile (default: default)"
+  echo "  KeyName        - Existing EC2 KeyPair name (required)"
+  echo "  StackName      - CloudFormation stack name (default: articles-api-stack)"
+  echo "  InstanceType   - EC2 instance type (default: t3.medium)"
+  echo "  Region         - AWS region (default: eu-north-1)"
+  echo "  Profile        - AWS CLI profile (default: default)"
   echo ""
-  echo "Example:"
-  echo "  ./ec2-launch.sh articles-api-stack my-key-pair t3.medium eu-north-1 default"
+  echo "Examples:"
+  echo "  ./ec2-launch.sh my-key-pair"
+  echo "  ./ec2-launch.sh my-key-pair articles-api-stack t3.medium eu-north-1 default"
   echo ""
   exit 1
 fi

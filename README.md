@@ -53,15 +53,15 @@ OpenAPI documentation will be at: http://localhost:3000/api-docs/
 
 ## Deploy
 
-At this point one should be logged into AWS by the command-line client.
+At this point one should be logged into AWS by the command-line client. The scripts use default values, such as `eu-north-1` for a region and `default` for the AWS profile.
 
 Create the AWS EC2-instance (t3.medium: 2 vcpu, 4GiB RAM):
 
-`./create-ec2.sh [STACK_NAME] [KEY_NAME] [INSTANCE_TYPE] [AWS_REGION] [PROFILE]`
+`./create-ec2.sh [AWS EC2 Key name] (optionally: [Stack name] [Instance type] [Region] [Profile])`
 
 Deploy the source code into the instance, build and run the container:
 
-`./deploy.sh [REPO_URL] [INSTANCE_IP] [KEY_PATH] [AWS_REGION] [INSTANCE_TYPE]`
+`./deploy.sh [Instance IP] [SSH Key path] (optionally: [Region])`
 
 ---
 
