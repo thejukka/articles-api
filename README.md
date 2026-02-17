@@ -17,6 +17,7 @@ I was also thinking of making this a serverless service as a AWS Lambda function
 * ESBuild (by `npm i esbuild -g`) for bundling
 * Docker for containerization
 * AWS account for the image deployment
+* POSIX friendly environment for running scripts
 
 ### Run (development) from a container
 
@@ -30,6 +31,7 @@ OpenAPI documentation will be at: http://localhost:3000/api-docs/
 
 `docker build -t articles-api:latest .`
 
+---
 
 ### App scripts
 
@@ -49,13 +51,21 @@ OpenAPI documentation will be at: http://localhost:3000/api-docs/
 
 `npm run build`
 
-**Deploy**
+## Deploy
 
-`docker push [your-aws-ecs-uri]:latest`
+At this point one should be logged into AWS by the command-line client.
 
-Launch an EC2 instance from the image
+Create the AWS EC2-instance (t3.medium: 2 vcpu, 4GiB RAM):
 
-### Directory structure
+`./create-ec2.sh [STACK_NAME] [KEY_NAME] [INSTANCE_TYPE] [AWS_REGION] [PROFILE]`
+
+Deploy the source code into the instance, build and run the container:
+
+`./deploy.sh [REPO_URL] [INSTANCE_IP] [KEY_PATH] [AWS_REGION] [INSTANCE_TYPE]`
+
+---
+
+## Directory structure
 
 |Name|Description|
 |-|-|

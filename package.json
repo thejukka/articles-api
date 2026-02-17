@@ -10,7 +10,7 @@
     "start": "tsc && node build/main.js",
     "dev": "tsx watch src/main.ts",
     "build": "tsc",
-    "bundle": "tsc && esbuild ./build/*.js --allow-overwrite --minify --outdir=./build"
+    "bundle": "tsc && esbuild ./build/*.js --bundle --platform=node --allow-overwrite --minify --outdir=./build"
   },
   "dependencies": {
     "better-sqlite3": "^9.2.2",
@@ -32,7 +32,6 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "@types/yamljs": "^0.2.34",
-    "nodemon": "^3.1.11",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
