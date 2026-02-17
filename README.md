@@ -75,3 +75,6 @@ Deploy the source code into the instance, build and run the container:
 |`.env`|Environmental parameters to use locally|
 |`api.yaml`|OpenAPI Swagger definitions|
 |`prettier.js`|Makes code less chaotic|
+|`ec2-template.yml`|AWS Cloudformation script for building up an EC2 instance|
+|`ec2-launch.sh`|Script to launch the instance|
+|`deploy.sh`|Script the source source deployment as well as to build and run the container|
