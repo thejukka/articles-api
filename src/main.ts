@@ -24,6 +24,7 @@ import {
   fetchArticleContent,
   stripHtml
 } 
+
 from './routines';
 
 dotenv.config();
@@ -167,13 +168,18 @@ app.post('/articles', async (req: Request, res: Response) => {
       return;
     }
 
-    if (!(new URL(url))) {
+    if (!URL.parse(url)) {
       sendError(res, HTTP_STATUS.BADREQUEST, 'Not valid URL');
       return;
     }
 
     // Fetch article by URL
     const fecthed = await fetchArticleContent(url);
+
+    if (!fecthed || fecthed.trim() === '') {
+      sendError(res, HTTP_STATUS.NOTFOUND, 'Article not found at the provided URL');
+      return;
+    }
 
     // Parse HTML content and extract title and text
     const dom = new jsdom.JSDOM(fecthed);
@@ -193,7 +199,7 @@ app.post('/articles', async (req: Request, res: Response) => {
     
     sendSuccess(res);
   } catch (err) {
-    sendError(res, HTTP_STATUS.SERROR, 'Server error', err);
+    sendError(res, HTTP_STATUS.SERROR, `Server error: ${err}`, err);
   }
 });
 
@@ -210,7 +216,7 @@ app.put('/articles/:id/section', (req: Request, res: Response) => {
     setSection(articleId, id);
     sendSuccess(res);
   } catch (err) {
-    sendError(res, HTTP_STATUS.SERROR, 'Server error', err);
+    sendError(res, HTTP_STATUS.SERROR, `Server error: ${err}`, err);
   }
 });
 
@@ -229,7 +235,7 @@ app.post('/sections', (req: Request, res: Response) => {
     addNewSection(title);
     sendSuccess(res);
   } catch (err) {
-    sendError(res, HTTP_STATUS.SERROR, 'Server error', err);
+    sendError(res, HTTP_STATUS.SERROR, `Server error: ${err}`, err);
   }
 });
 
@@ -241,7 +247,7 @@ app.delete('/sections/:id', (req: Request, res: Response) => {
     deleteSection(sectionId);
     sendSuccess(res);
   } catch (err) {
-    sendError(res, HTTP_STATUS.SERROR, 'Server error', err);
+    sendError(res, HTTP_STATUS.SERROR, `Server error: ${err}`, err);
   }
 });
 
@@ -253,7 +259,7 @@ app.delete('/articles/:id', (req: Request, res: Response) => {
     deleteArticle(articleId);
     sendSuccess(res, { message: 'Article deleted' });
   } catch (err) {
-    sendError(res, HTTP_STATUS.SERROR, 'Server error', err);
+    sendError(res, HTTP_STATUS.SERROR, `Server error: ${err}`, err);
   }
 });
 

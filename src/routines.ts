@@ -17,10 +17,12 @@ export const countWords = (content: string): number => {
   return words.length;
 }
 
-export const fetchArticleContent = async (url: string): Promise<string> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch article: ${response.statusText}`);
-  }
-  return await response.text();
-}
+export const fetchArticleContent = async (url: string): Promise<string> => 
+  await 
+    fetch(url)
+    .then(resp => resp.status === 200 
+          ? resp.text() 
+          : Promise.resolve('')
+    .catch(err => { 
+      throw new Error(err) 
+    }));
