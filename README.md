@@ -51,6 +51,10 @@ OpenAPI documentation will be at: http://localhost:3000/api-docs/
 
 `npm run build`
 
+**Run tests**
+
+`npm run test`
+
 ## Deploy
 
 At this point one should be logged into AWS by the command-line client. The scripts use default values, such as `eu-north-1` for a region and `default` for the AWS profile.

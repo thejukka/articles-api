@@ -27,7 +27,7 @@ components:
         words:
           type: integer
           example: 500
-        section_id:
+        section:
           type: integer
           nullable: true
           example: 1
@@ -50,10 +50,46 @@ components:
         words:
           type: integer
           example: 500
-        section_id:
+        section:
           type: integer
           nullable: true
           example: 1 
+
+    JobQueuqed:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        url:
+          type: string
+          example: "https://localhost:3000/articles/1"
+        jobId:
+          type: string
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        processUrl:
+          type: string
+          example: http://localhost:3000/articles/jobs/123e4567-e89b-12d3-a456-426614174000
+        status:
+          type: string
+          example: queued
+
+    Job:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "Fetching"
+
+    JobError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Failed to fetch article content"
+        timestamp:
+          type: string
+          format: date-time
 
     Section:
       type: object
@@ -132,15 +168,13 @@ paths:
                   example: https://example.com/article
       responses:
         '200':
-          description: Article added successfully
+          description: The job for processing the article has been created
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Success
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobQueuqed'
         '400':
           description: Invalid request (missing or invalid URL)
           content:
@@ -181,10 +215,15 @@ paths:
         '500':
           description: Server error
           content:
-            application/json:
+            application/json:      type: object
+      properties:
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time   
               schema:
                 $ref: '#/components/schemas/Error'
-
     delete:
       summary: Delete article by ID
       tags:
@@ -307,6 +346,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /jobs/{id}:
+    get:
+      summary: Get article processing job status by ID
+      tags:
+        - Jobs
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Job ID
+      responses:
+        '200':
+          description: Job status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobError'         
 
   /sections:
     get:

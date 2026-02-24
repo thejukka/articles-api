@@ -12,7 +12,7 @@ const initDb = () => {
       url TEXT NOT NULL,
       title TEXT NOT NULL,
       words INTEGER NOT NULL,
-      section_id INTEGER DEFAULT NULL,
+      section INTEGER DEFAULT NULL,
       content TEXT NOT NULL
     );
 
@@ -25,10 +25,9 @@ const initDb = () => {
 
 const getArticles = () => 
   db.prepare(`
-    SELECT id, url, title, section_id, words 
+    SELECT id, url, title, section, words 
     FROM articles`
   ).all();
-
 
 const getSections = () => 
   db.prepare('SELECT id, title FROM sections').all();
@@ -44,18 +43,15 @@ const getSectionById = (id: number) =>
 
 const getArticlesBySectionId = (sectionId: number) => 
   db.prepare(`
-    SELECT id, title FROM articles AS a
-    JOIN sections AS s ON s.id = a.section_id
-    WHERE a.section_id = ?
-  `).all(sectionId);   
+    SELECT id, title FROM articles WHERE section = ?`).all(sectionId);   
 
 
-const getArticlesByWordCount = (minWords: number = 0, maxWords: number = 0) => (
+const getArticlesByWordCount = (minWords: number = 0, maxWords: number = Number.MAX_SAFE_INTEGER) => (
   db.prepare('SELECT id,title,words FROM articles WHERE words BETWEEN ? AND ?')
     .all(minWords, maxWords))
 
 
-const saveArticle  = async (
+const saveArticle = (
   url: string, 
   title: string, 
   words: number, 
@@ -67,22 +63,32 @@ const saveArticle  = async (
     .run(url, title, words, content);
 
 
+
+
 const setSection = (articleId: number, sectionId: number) => {
-  const update = db.prepare('UPDATE articles SET section_id = ? WHERE id = ?');
-  update.run(sectionId, articleId);
+  try {
+    const section = db.prepare('SELECT id FROM sections WHERE id = ?').run(sectionId);
+    if (section)
+      db.prepare('UPDATE articles SET section = ? WHERE id = ?')
+        .run(sectionId, articleId);
+    else
+      throw new Error('No such section with given ID')    
+  } catch(err) {
+    throw new Error(String(err));
+  }
 } 
+
 
 const addNewSection = (title: string) => {
   db.prepare('INSERT INTO sections (title) VALUES (?)').run(title);
 }
 
 const deleteSection = (sectionId: number) => {
-  const sectionArticles = db.prepare('SELECT id FROM articles WHERE section_id = ?').all(sectionId);
+  const sectionArticles = db.prepare('SELECT id FROM articles WHERE section = ?').all(sectionId);
 
   // Check if articles are associated with the section before deleting
-  if (sectionArticles.length > 0) {
-    db.prepare('UPDATE articles SET section_id = NULL WHERE section_id = ?').run(sectionId);
-  }
+  if (sectionArticles.length > 0) 
+    db.prepare('UPDATE articles SET section = NULL WHERE section = ?').run(sectionId);
 
   db.prepare('DELETE FROM sections WHERE id = ?').run(sectionId);
 } 
