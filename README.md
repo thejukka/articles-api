@@ -11,7 +11,6 @@ I was also thinking of making this a serverless service as a AWS Lambda function
 ### Requirements
 * NodeJS v21
 * NPM
-* Nodemon (by `npm i nodemon -g`)
 
 ### Optional reuirements
 * ESBuild (by `npm i esbuild -g`) for bundling
