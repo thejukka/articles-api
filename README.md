@@ -1,6 +1,10 @@
 # Articles API
 
-### The design and fundamentals
+### The purpose
+
+This backend was written to fetch and organize articles from wanted websites.
+
+### Design and fundamentals
 
 Since I've done lots of these APIs with Node/Express, I decided to use them here also since it's fast enough for me. I think this could be quite production ready with user identification (JWT Tokens, OAuth, AWS Cognito, etc.) and few security/fallback rules, but I kept it very simplistic and barebones type. To get only the wanted content from an article, I decided to read it in as DOM and meddle with it.
 
